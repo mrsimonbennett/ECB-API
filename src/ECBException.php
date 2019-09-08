@@ -25,7 +25,7 @@ class ECBException extends Exception
      * @param int $code
      * @param Throwable|null $previous
      */
-    public function __construct(string $message = '', int $code = self::UNDEFINED, Throwable $previous = null)
+    public function __construct(string $message = null, int $code = self::UNDEFINED, Throwable $previous = null)
     {
         $msg = '';
         switch ($code) {
@@ -47,7 +47,7 @@ class ECBException extends Exception
                 throw new InvalidArgumentException('Invalid error code');
         }
 
-        if (!empty($message)) {
+        if (!is_null($message)) {
             $msg .= (!empty($msg) ? ' <= ' : '') . $message;
         }
 

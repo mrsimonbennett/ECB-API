@@ -3,6 +3,7 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use Richardds\ECBAPI\ECBConverter;
+use Richardds\ECBAPI\ECBException;
 
 $converter = new ECBConverter();
 
@@ -10,7 +11,7 @@ $references = [];
 
 try {
     $references = $converter->list(true);
-} catch (\Richardds\ECBAPI\ECBException $e) {
+} catch (ECBException $e) {
     echo $e->getMessage();
 }
 

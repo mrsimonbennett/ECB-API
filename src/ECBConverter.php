@@ -38,7 +38,7 @@ class ECBConverter
     /**
      * @throws ECBException
      */
-    public function checkFileCache(): void
+    public function checkFileCache()
     {
         if (!file_exists($this->cache_file) ||  time() - filemtime($this->cache_file) > $this->cache_timeout) {
             $this->reloadExchangeReferences();
@@ -59,7 +59,7 @@ class ECBConverter
      * @return int|array
      * @throws ECBException
      */
-    public function toEuro(int $amount, $currency_code, ?int $round = null)
+    public function toEuro(int $amount, $currency_code, int $round = null)
     {
         return $this->convert($amount, $currency_code, function ($amount, $rate) use ($round) {
             $val = $amount / $rate;
@@ -144,7 +144,7 @@ class ECBConverter
      *
      * @throws ECBException
      */
-    public function reloadExchangeReferences(): void
+    public function reloadExchangeReferences()
     {
         try {
             $this->exchange_data = ECB::getExchangeReferences();
@@ -163,7 +163,7 @@ class ECBConverter
      * @return int|array
      * @throws ECBException
      */
-    public function toForeign(int $amount, string $currency_code, ?int $precision = null)
+    public function toForeign(int $amount, string $currency_code, int $precision = null)
     {
         return $this->convert($amount, $currency_code, function ($amount, $rate) use ($precision) {
             $val = $amount * $rate;
@@ -182,7 +182,7 @@ class ECBConverter
     /**
      * @param string $cache_file
      */
-    public function setCacheFile(string $cache_file): void
+    public function setCacheFile(string $cache_file)
     {
         $this->cache_file = $cache_file;
     }
@@ -198,7 +198,7 @@ class ECBConverter
     /**
      * @param int $cache_timeout
      */
-    public function setCacheTimeout(int $cache_timeout): void
+    public function setCacheTimeout(int $cache_timeout)
     {
         $this->cache_timeout = $cache_timeout;
     }

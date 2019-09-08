@@ -3,6 +3,7 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use Richardds\ECBAPI\ECBConverter;
+use Richardds\ECBAPI\ECBException;
 
 $converter = new ECBConverter();
 
@@ -10,7 +11,7 @@ try {
     $a = $converter->toEuro(150, 'USD', 1);
     $b = $converter->toEuro(150, ['EUR', 'USD', 'CHF', 'RUB', 'CZK']);
     $c = $converter->toForeign(150, 'USD');
-} catch (\Richardds\ECBAPI\ECBException $e) {
+} catch (ECBException $e) {
     echo $e->getMessage();
 }
 

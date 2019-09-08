@@ -23,7 +23,7 @@ class ECB
     {
         $raw_xml_data = self::fetch(self::EXCHANGE_REFERENCE_URL);
 
-        if (($xml = simplexml_load_string($raw_xml_data)) !== false) {
+        if (($xml = @simplexml_load_string($raw_xml_data)) !== false) {
             $exchange_references = [];
             $exchange_references['EUR'] = new Currency('EUR', 1.0000);
 
@@ -32,13 +32,11 @@ class ECB
                 $rate = (double)($row['rate'] ?? 0);
 
                 if (empty($code) || strlen($code) != 3) {
-                    throw new ECBException('Currency code is invalid',
-                        ECBException::DATA_PARSE_FAILED);
+                    throw new ECBException('Invalid currency code',ECBException::DATA_PARSE_FAILED);
                 }
 
                 if ($rate <= 0) {
-                    throw new ECBException('Currency rate is invalid',
-                        ECBException::DATA_PARSE_FAILED);
+                    throw new ECBException('Invalid currency rate',ECBException::DATA_PARSE_FAILED);
                 }
 
                 $exchange_references[$code] = new Currency($code, $rate);
@@ -47,7 +45,7 @@ class ECB
             return $exchange_references;
         }
 
-        throw new ECBException('', ECBException::DATA_PARSE_FAILED);
+        throw new ECBException('Failed to parse data from ECB', ECBException::DATA_PARSE_FAILED);
     }
 
     /**
@@ -57,7 +55,12 @@ class ECB
      */
     private static function fetch(string $url): string
     {
-        $ch = curl_init($url . '?' . uniqid());
+        $ch = @curl_init($url . '?' . uniqid());
+
+        if ($ch === false) {
+            throw new ECBException('Failed to initialize cURL', ECBException::DATA_DOWNLOAD_FAILED);
+        }
+
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
         if (($data = @curl_exec($ch)) !== false) {
@@ -65,7 +68,7 @@ class ECB
 
             if ($http_code != 200) {
                 curl_close($ch);
-                throw new ECBException('HTTP_CODE != 200', ECBException::DATA_DOWNLOAD_FAILED);
+                throw new ECBException('Invalid HTTP return code', ECBException::DATA_DOWNLOAD_FAILED);
             }
 
             curl_close($ch);
